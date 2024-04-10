@@ -1,4 +1,4 @@
-import { FlatList, Image, ImageBackground, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { FlatList, Image, ImageBackground, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { colors, sizes } from '../utils/Theme'
 import ThreeDotsSVG from '../assets/SVG_Components/ThreeDotsSVG'
@@ -228,10 +228,52 @@ const ChatSpecificScreen = () => {
                                     </View>
                                 </TouchableOpacity>
                             }
+                            contentStyle={{ backgroundColor: colors.addMediaPopupBackground, marginBottom: 48, borderRadius: 15 }}
                         >
-                            <Menu.Item onPress={() => { }} title="Item 1" />
-                            <Menu.Item onPress={() => { }} title="Item 2" />
-                            <Menu.Item onPress={() => { }} title="Item 3" />
+                            <View style={{ width: sizes.width * 0.95, paddingVertical: 22, flexDirection: 'row', justifyContent: 'space-evenly', alignSelf: 'center' }}>
+                                <Pressable style={styles.addMediaButtonParentView}>
+                                    <View style={styles.addMediaIconCircleView}>
+                                        <View style={styles.addMediaIconColorsView}>
+                                            <View style={[styles.flexOneView, { backgroundColor: colors.addMediaDocumentIconTop }]} />
+                                            <View style={[styles.flexOneView, { backgroundColor: colors.addMediaDocumentIconBottom }]} />
+                                        </View>
+                                    </View>
+
+                                    <Text style={styles.addMediaButtonText}>
+                                        Document
+                                    </Text>
+                                </Pressable>
+
+                                <Pressable style={styles.addMediaButtonParentView}>
+                                    <View style={styles.addMediaIconCircleView}>
+                                        <View style={styles.addMediaIconColorsView}>
+                                            <View style={[styles.flexOneView, { backgroundColor: colors.addMediaCameraIconTop }]} />
+                                            <View style={[styles.flexOneView, { backgroundColor: colors.addMediaCameraIconBottom }]} />
+                                        </View>
+
+                                        <View style={{}}>
+                                            <CameraChatSpecificSVG size={21} color={colors.white} />
+                                        </View>
+                                    </View>
+
+                                    <Text style={styles.addMediaButtonText}>
+                                        Camera
+                                    </Text>
+                                </Pressable>
+
+                                <Pressable style={styles.addMediaButtonParentView}>
+                                    <View style={styles.addMediaIconCircleView}>
+                                        <View style={styles.addMediaIconColorsView}>
+                                            <View style={[styles.flexOneView, { backgroundColor: colors.addMediaGalleryIconTop }]} />
+                                            <View style={[styles.flexOneView, { backgroundColor: colors.addMediaGalleryIconBottom }]} />
+                                        </View>
+                                    </View>
+
+                                    <Text style={styles.addMediaButtonText}>
+                                        Gallery
+                                    </Text>
+                                </Pressable>
+                            </View>
                         </Menu>
 
 
@@ -276,4 +318,30 @@ const ChatSpecificScreen = () => {
 
 export default ChatSpecificScreen
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    addMediaIconColorsView: {
+        width: '100%',
+        height: '100%',
+        position: "absolute",
+    },
+    addMediaButtonParentView: {
+        alignItems: 'center',
+    },
+    addMediaButtonText: {
+        fontSize: 13,
+        marginTop: 5,
+        color: colors.cameraChatSpecific
+    },
+    flexOneView: {
+        flex: 1,
+        backgroundColor: colors.addMediaDocumentIconTop,
+    },
+    addMediaIconCircleView: {
+        width: 54,
+        height: 54,
+        borderRadius: 60,
+        justifyContent: 'center',
+        alignItems: 'center',
+        overflow: "hidden",
+    },
+})  

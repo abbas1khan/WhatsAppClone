@@ -54,6 +54,13 @@ export const colors = {
     dayTimeBackground: "#1c272d",
     messageTime: "#94bfb8",
     blueTick: "#52beea",
+    addMediaPopupBackground: "#26343d",
+    addMediaDocumentIconTop: "#745de9",
+    addMediaDocumentIconBottom: "#7f66ff",
+    addMediaCameraIconTop: "#e82b6d",
+    addMediaCameraIconBottom: "#fd2e74",
+    addMediaGalleryIconTop: "#b659e5",
+    addMediaGalleryIconBottom: "#c861fa",
 
 
 
