@@ -217,7 +217,7 @@ const ChatSpecificScreen = () => {
                         {/* Media Button */}
                         <Menu
                             visible={showAddMediaMenu}
-                            onDismiss={() => setShowAddMediaMenu(false)}
+                            onDismiss={() => { setShowAddMediaMenu(false) }}
                             anchor={
                                 <TouchableOpacity
                                     onPress={() => { setShowAddMediaMenu(true) }}
