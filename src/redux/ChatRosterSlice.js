@@ -18,11 +18,11 @@ const ChatRosterSlice = createSlice({
             });
         },
         sendMessage(state, action) {
-            const userIndex = action.payload?.chatId ? state?.chats?.findIndex(item => item?.chatId === action.payload?.chatId) : -1;
-            if (userIndex !== -1) {
-                state.chats[userIndex] = {
-                    ...state.chats[userIndex],
-                    messages: [action.payload?.message, ...state.chats[userIndex].messages]
+            const chatIndex = action.payload?.chatId ? state?.chats?.findIndex(item => item?.chatId === action.payload?.chatId) : -1;
+            if (chatIndex !== -1) {
+                state.chats[chatIndex] = {
+                    ...state.chats[chatIndex],
+                    messages: [action.payload?.message, ...state.chats[chatIndex].messages]
                 };
             }
         },

@@ -16,6 +16,9 @@ import moment from 'moment'
 import DoubleBlueTickSVG from '../assets/SVG_Components/DoubleBlueTickSVG'
 import generateItems from '../services/generateItems'
 import { Menu } from 'react-native-paper';
+import * as ImagePicker from 'expo-image-picker';
+import ChatImageVideo from '../components/chatSpecific/ChatImageVideo'
+import ChatTextMessage from '../components/chatSpecific/ChatTextMessage'
 
 const ChatSpecificScreen = () => {
 
@@ -33,7 +36,7 @@ const ChatSpecificScreen = () => {
 
 
     const sortedMessages = generateItems(messages);
-    console.log("🚀 ~ ChatSpecificScreen ~ sortedMessages:", JSON.stringify(sortedMessages))
+    // console.log("🚀 ~ ChatSpecificScreen ~ sortedMessages:", JSON.stringify(sortedMessages))
 
 
 
@@ -42,6 +45,7 @@ const ChatSpecificScreen = () => {
 
     const [messageText, setMessageText] = useState("")
     const [showAddMediaMenu, setShowAddMediaMenu] = useState(false)
+    const [showScrollDown, setShowScrollDown] = useState(false)
 
 
 
@@ -68,20 +72,23 @@ const ChatSpecificScreen = () => {
         }
         return (
             <View>
-                <View style={{ alignItems: 'flex-end', paddingRight: 16 }}>
-                    <View style={{ maxWidth: sizes.width * 0.8, paddingVertical: 5, paddingHorizontal: 10, marginVertical: 1.5, backgroundColor: colors.messageBackground, borderRadius: 12 }}>
-                        <Text style={{ fontSize: 16, color: colors.white }}>
-                            {item?.content}
-                        </Text>
-                        <View style={{ flexDirection: 'row', alignSelf: 'flex-end', alignItems: 'flex-end', }}>
-                            <Text style={{ fontSize: 11, marginTop: 6, marginRight: 4, color: colors.messageTime }}>
-                                {moment(item?.createdAt).format('LT')}
-                            </Text>
-
-                            <DoubleBlueTickSVG size={18} color={colors.blueTick} />
-                        </View>
+                <Pressable
+                    onLongPress={() => { }}
+                >
+                    <View style={{ alignItems: 'flex-end', paddingRight: 16, marginVertical: 1.5, }}>
+                        {item?.type === "text" ?
+                            <ChatTextMessage
+                                item={item}
+                            />
+                            :
+                            (item?.type === "image" || item?.type === "video") ?
+                                <ChatImageVideo
+                                    item={item}
+                                />
+                                : <></>
+                        }
                     </View>
-                </View>
+                </Pressable>
             </View>
         )
     }
@@ -94,16 +101,14 @@ const ChatSpecificScreen = () => {
     function onSendMessage() {
         if (messageText?.trim()?.length > 0) {
             const localDate = Date.now()
-            dispatch(sendMessage({
-                chatId: chatId,
-                message: {
-                    _id: localDate,
-                    type: "text",
-                    content: messageText?.trim(),
-                    messageId: localDate,
-                    createdAt: localDate,
-                }
-            }))
+            let message = {
+                _id: localDate,
+                type: "text",
+                content: messageText?.trim(),
+                messageId: localDate,
+                createdAt: localDate,
+            }
+            dispatch(sendMessage({ message: message, chatId: chatId }))
             setMessageText("")
             setTimeout(() => {
                 flatListRef?.current?.scrollToOffset({ offset: 0, animated: true })
@@ -111,6 +116,49 @@ const ChatSpecificScreen = () => {
         }
     }
 
+    async function galleryPress() {
+        setShowAddMediaMenu(false)
+
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsMultipleSelection: true,
+            quality: 1,
+        });
+
+        if (!result.canceled && result.assets?.length > 0) {
+            console.log("🚀 ~ galleryPress ~ result.assets:", JSON.stringify(result.assets))
+            result.assets?.map((item) => {
+                const localDate = Date.now()
+
+                let message = {
+                    _id: localDate,
+                    type: item?.type,
+                    uri: item?.uri,
+                    messageId: localDate,
+                    createdAt: localDate,
+                }
+
+                if (item?.type === "video") {
+                    message.duration = item?.duration
+                }
+
+                dispatch(sendMessage({ message: message, chatId: chatId }))
+            })
+        }
+    }
+
+    function onScroll(e) {
+        const y = e.nativeEvent.contentOffset.y;
+        if (y > 327) {
+            if (!showScrollDown) {
+                setShowScrollDown(true)
+            }
+        } else {
+            if (showScrollDown) {
+                setShowScrollDown(false)
+            }
+        }
+    }
 
 
 
@@ -191,9 +239,7 @@ const ChatSpecificScreen = () => {
                         showsVerticalScrollIndicator={false}
                         keyExtractor={(item, index) => index}
                         renderItem={renderMessages}
-                    // onDragEnd={({ data }) => {
-                    //     dispatch(updateNotesDraggableList(data))
-                    // }}
+                        onScroll={onScroll}
                     />
 
                 </View>
@@ -231,7 +277,12 @@ const ChatSpecificScreen = () => {
                             contentStyle={{ backgroundColor: colors.addMediaPopupBackground, marginBottom: 48, borderRadius: 15 }}
                         >
                             <View style={{ width: sizes.width * 0.95, paddingVertical: 22, flexDirection: 'row', justifyContent: 'space-evenly', alignSelf: 'center' }}>
-                                <Pressable style={styles.addMediaButtonParentView}>
+
+                                {/* Document Button */}
+                                <Pressable
+                                    onPress={() => { documentPress() }}
+                                    style={styles.addMediaButtonParentView}
+                                >
                                     <View style={styles.addMediaIconCircleView}>
                                         <View style={styles.addMediaIconColorsView}>
                                             <View style={[styles.flexOneView, { backgroundColor: colors.addMediaDocumentIconTop }]} />
@@ -244,7 +295,11 @@ const ChatSpecificScreen = () => {
                                     </Text>
                                 </Pressable>
 
-                                <Pressable style={styles.addMediaButtonParentView}>
+                                {/* Camera Button */}
+                                <Pressable
+                                    onPress={() => { cameraPress() }}
+                                    style={styles.addMediaButtonParentView}
+                                >
                                     <View style={styles.addMediaIconCircleView}>
                                         <View style={styles.addMediaIconColorsView}>
                                             <View style={[styles.flexOneView, { backgroundColor: colors.addMediaCameraIconTop }]} />
@@ -261,7 +316,11 @@ const ChatSpecificScreen = () => {
                                     </Text>
                                 </Pressable>
 
-                                <Pressable style={styles.addMediaButtonParentView}>
+                                {/* Gallery Button */}
+                                <Pressable
+                                    onPress={() => { galleryPress() }}
+                                    style={styles.addMediaButtonParentView}
+                                >
                                     <View style={styles.addMediaIconCircleView}>
                                         <View style={styles.addMediaIconColorsView}>
                                             <View style={[styles.flexOneView, { backgroundColor: colors.addMediaGalleryIconTop }]} />
@@ -334,7 +393,6 @@ const styles = StyleSheet.create({
     },
     flexOneView: {
         flex: 1,
-        backgroundColor: colors.addMediaDocumentIconTop,
     },
     addMediaIconCircleView: {
         width: 54,
