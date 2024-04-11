@@ -18,13 +18,19 @@ const ChatRosterSlice = createSlice({
             });
         },
         sendMessage(state, action) {
-            const chatIndex = action.payload?.chatId ? state?.chats?.findIndex(item => item?.chatId === action.payload?.chatId) : -1;
-            if (chatIndex !== -1) {
-                state.chats[chatIndex] = {
-                    ...state.chats[chatIndex],
-                    messages: [action.payload?.message, ...state.chats[chatIndex].messages]
-                };
-            }
+            const { chatId, message } = action.payload;
+            return {
+                ...state,
+                chats: state?.chats?.map(chat => {
+                    if (chat?.chatId === chatId) {
+                        return {
+                            ...chat,
+                            messages: [message, ...chat.messages]
+                        };
+                    }
+                    return chat;
+                })
+            };
         },
     }
 })

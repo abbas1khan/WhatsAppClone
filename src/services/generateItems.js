@@ -40,7 +40,7 @@ function generateItems(messages) {
     const sortedMessages = days[date].sort(
       (x, y) => new Date(y.createdAt) - new Date(x.createdAt)
     );
-    return acc.concat([...sortedMessages, { type: 'day', date, _id: Date.now() }]);
+    return acc.concat([...sortedMessages, { type: 'day', date, _id: Date.now(), messageId: Date.now() }]);
   }, []);
   return items;
 }

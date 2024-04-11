@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { Video, ResizeMode } from 'expo-av';
 import { colors, sizes } from '../../utils/Theme';
+import ChatVideo from './ChatVideo';
 
 const ChatImageVideo = ({ item }) => {
     return (
@@ -14,11 +14,8 @@ const ChatImageVideo = ({ item }) => {
                 />
                 :
                 item?.type === "video" ?
-                    <Video
-                        style={{ width: '100%', height: '100%', borderRadius: 8, }}
-                        source={{ uri: item?.uri }}
-                        useNativeControls
-                        resizeMode={ResizeMode.COVER}
+                    <ChatVideo
+                        item={item}
                     />
                     :
                     <></>

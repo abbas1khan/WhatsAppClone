@@ -1,4 +1,4 @@
-import { FlatList, Image, ImageBackground, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { FlatList, Image, ImageBackground, Pressable, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { colors, sizes } from '../utils/Theme'
 import ThreeDotsSVG from '../assets/SVG_Components/ThreeDotsSVG'
@@ -75,7 +75,7 @@ const ChatSpecificScreen = () => {
                 <Pressable
                     onLongPress={() => { }}
                 >
-                    <View style={{ alignItems: 'flex-end', paddingRight: 16, marginVertical: 1.5, }}>
+                    <View style={{ alignItems: 'flex-end', paddingRight: 16, paddingVertical: 1.5, }}>
                         {item?.type === "text" ?
                             <ChatTextMessage
                                 item={item}
@@ -113,6 +113,8 @@ const ChatSpecificScreen = () => {
             setTimeout(() => {
                 flatListRef?.current?.scrollToOffset({ offset: 0, animated: true })
             }, 0);
+        } else {
+            ToastAndroid.show("Please enter message", ToastAndroid.SHORT);
         }
     }
 
@@ -158,6 +160,10 @@ const ChatSpecificScreen = () => {
                 setShowScrollDown(false)
             }
         }
+    }
+
+    async function cameraPress() {
+        setShowAddMediaMenu(false)
     }
 
 
@@ -237,7 +243,7 @@ const ChatSpecificScreen = () => {
                         inverted={true}
                         ref={flatListRef}
                         showsVerticalScrollIndicator={false}
-                        keyExtractor={(item, index) => index}
+                        keyExtractor={(item, index) => item?.messageId}
                         renderItem={renderMessages}
                         onScroll={onScroll}
                     />
@@ -359,14 +365,14 @@ const ChatSpecificScreen = () => {
 
 
                     {/* Send Message Button */}
-                    <TouchableOpacity
+                    <Pressable
                         onPress={() => onSendMessage()}
                         style={{ width: 47, height: 47, borderRadius: 50, backgroundColor: colors.sendMessageButton, justifyContent: 'center', alignItems: 'center', }}
                     >
                         <View style={{ transform: [{ rotate: '45deg' }], marginLeft: -4 }}>
                             <SendIconSVG size={20} />
                         </View>
-                    </TouchableOpacity>
+                    </Pressable>
                 </View>
             </ImageBackground>
 
