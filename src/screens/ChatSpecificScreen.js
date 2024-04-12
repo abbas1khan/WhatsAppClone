@@ -174,6 +174,10 @@ const ChatSpecificScreen = () => {
         }
     }
 
+    async function documentPress() {
+        setShowAddMediaMenu(false)
+    }
+
     async function cameraPress() {
         setShowAddMediaMenu(false)
     }
