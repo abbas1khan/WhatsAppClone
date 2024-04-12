@@ -1,8 +1,8 @@
-import { FlatList, Image, ImageBackground, Pressable, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
-import React, { useRef, useState } from 'react'
-import { colors, sizes } from '../utils/Theme'
+import { BackHandler, FlatList, Image, ImageBackground, Pressable, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { colors, hexToRGBA, sizes } from '../utils/Theme'
 import ThreeDotsSVG from '../assets/SVG_Components/ThreeDotsSVG'
-import { Ionicons, Feather } from '@expo/vector-icons'
+import { Ionicons, Feather, MaterialIcons } from '@expo/vector-icons'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import useScreenFocus from '../hooks/useScreenFocus'
 import * as NavigationBar from 'expo-navigation-bar';
@@ -10,7 +10,7 @@ import SendIconSVG from '../assets/SVG_Components/SendIconSVG'
 import PaperClipSVG from '../assets/SVG_Components/PaperClipSVG'
 import CameraChatSpecificSVG from '../assets/SVG_Components/CameraChatSpecificSVG'
 import DraggableFlatList from "react-native-draggable-flatlist";
-import { sendMessage } from '../redux/ChatRosterSlice'
+import { deleteMessage, sendMessage } from '../redux/ChatRosterSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import moment from 'moment'
 import DoubleBlueTickSVG from '../assets/SVG_Components/DoubleBlueTickSVG'
@@ -46,6 +46,8 @@ const ChatSpecificScreen = () => {
     const [messageText, setMessageText] = useState("")
     const [showAddMediaMenu, setShowAddMediaMenu] = useState(false)
     const [showScrollDown, setShowScrollDown] = useState(false)
+    const [selectedMessages, setSelectedMessages] = useState([]);
+    console.log("🚀 ~ ChatSpecificScreen ~ selectedMessages:", selectedMessages)
 
 
 
@@ -59,6 +61,8 @@ const ChatSpecificScreen = () => {
 
 
     const renderMessages = ({ item, index }) => {
+        const isSelected = selectedMessages?.some((selectedMessage) => selectedMessage?.messageId === item?.messageId)
+
         if (item?.type === 'day') {
             return (
                 <View style={{ alignItems: 'center', marginTop: 9, marginBottom: 8 }}>
@@ -73,17 +77,25 @@ const ChatSpecificScreen = () => {
         return (
             <View>
                 <Pressable
-                    onLongPress={() => { }}
+                    onPress={() => toggleSelection(item)}
+                    onLongPress={() => toggleSelection(item)}
                 >
-                    <View style={{ alignItems: 'flex-end', paddingRight: 16, paddingVertical: 1.5, }}>
+                    <View style={{ backgroundColor: isSelected ? hexToRGBA(colors.createNewChatButton, 0.28) : colors.transparent, alignItems: 'flex-end', paddingRight: 16, paddingVertical: 1.5, }}>
                         {item?.type === "text" ?
-                            <ChatTextMessage
-                                item={item}
-                            />
+                            <Pressable
+                                onPress={() => toggleSelection(item)}
+                                onLongPress={() => toggleSelection(item)}
+                            >
+                                <ChatTextMessage
+                                    item={item}
+                                />
+                            </Pressable>
                             :
                             (item?.type === "image" || item?.type === "video") ?
                                 <ChatImageVideo
                                     item={item}
+                                    isSelected={isSelected}
+                                    toggleSelection={toggleSelection}
                                 />
                                 : <></>
                         }
@@ -166,6 +178,29 @@ const ChatSpecificScreen = () => {
         setShowAddMediaMenu(false)
     }
 
+    const toggleSelection = (item) => {
+        setSelectedMessages((prevSelectedMessages) => {
+            const index = prevSelectedMessages?.findIndex((selectedItem) => selectedItem?.messageId === item?.messageId);
+            if (index !== -1) {
+                // If item is already selected, deselect it
+                return prevSelectedMessages?.filter((selectedItem) => selectedItem?.messageId !== item?.messageId);
+            } else {
+                // If item is not selected, select it
+                return [...prevSelectedMessages, item];
+            }
+        })
+    }
+
+    function onDeletePress() {
+        selectedMessages?.map(item => {
+            dispatch(deleteMessage({ messageId: item?.messageId, chatId: chatId }))
+        })
+    }
+
+
+
+
+
 
 
 
@@ -175,6 +210,28 @@ const ChatSpecificScreen = () => {
     })
 
 
+    useEffect(() => {
+        const backAction = () => {
+            setSelectedMessages([])
+            return true;
+        };
+
+        let backHandler
+
+        if (selectedMessages?.length > 0) {
+            backHandler = BackHandler.addEventListener('hardwareBackPress', backAction)
+
+            return () => backHandler.remove()
+        } else {
+            return () => {
+                if (backHandler) {
+                    backHandler.remove()
+                }
+            }
+        }
+    }, [selectedMessages])
+
+
     return (
         <View style={{ flex: 1, backgroundColor: colors.chatBackground, }}>
 
@@ -182,44 +239,65 @@ const ChatSpecificScreen = () => {
 
 
             {/* ------------------------- Header ------------------------ */}
-            <View style={{ height: 56, backgroundColor: colors.header, flexDirection: 'row', justifyContent: "space-between", }}>
+            <View style={{ height: 56, backgroundColor: colors.header, }}>
 
-                {/* Back Button and Profile Picture */}
-                <TouchableOpacity
-                    onPress={() => { navigation.goBack() }}
-                    style={{ paddingLeft: 6, paddingRight: 9, flexDirection: 'row', alignItems: 'center', }}
-                >
+                {selectedMessages?.length > 0 ?
+                    <View style={{ width: '100%', height: '100%', flexDirection: 'row', justifyContent: "space-between", }}>
+                        <TouchableOpacity
+                            onPress={() => { setSelectedMessages([]) }}
+                            style={{ height: '100%', paddingLeft: 16, paddingRight: 9, justifyContent: 'center', }}
+                        >
+                            <Ionicons name="arrow-back-sharp" size={23} color={colors.white} />
+                        </TouchableOpacity>
 
-                    {/* Back Icon */}
-                    <Ionicons name="arrow-back-sharp" size={23} color={colors.white} />
+                        <TouchableOpacity
+                            onPress={() => { onDeletePress() }}
+                            style={{ paddingLeft: 6, paddingRight: 16, flexDirection: 'row', alignItems: 'center', }}
+                        >
+                            <MaterialIcons name="delete" size={24} color={colors.white} />
+                        </TouchableOpacity>
 
-                    {/* Profie Picture of User */}
-                    <Image
-                        source={{ uri: thisChatData?.profilePic }}
-                        style={{ width: 35, height: 35, marginLeft: 1, borderRadius: 40 }}
-                    />
-                </TouchableOpacity>
+                    </View>
+                    :
+                    <View style={{ width: '100%', height: '100%', flexDirection: 'row', justifyContent: "space-between", }}>
+                        {/* Back Button and Profile Picture */}
+                        <TouchableOpacity
+                            onPress={() => { navigation.goBack() }}
+                            style={{ paddingLeft: 6, paddingRight: 9, flexDirection: 'row', alignItems: 'center', }}
+                        >
 
-                {/* Name of User */}
-                <TouchableOpacity
-                    onPress={() => { }}
-                    style={{ flex: 1, justifyContent: 'center', }}
-                >
-                    <Text
-                        numberOfLines={1}
-                        style={{ fontSize: 18, color: colors.white, }}
-                    >
-                        {thisChatData?.name}
-                    </Text>
-                </TouchableOpacity>
+                            {/* Back Icon */}
+                            <Ionicons name="arrow-back-sharp" size={23} color={colors.white} />
 
-                {/* Three dots Button */}
-                <TouchableOpacity
-                    onPress={() => { }}
-                    style={{ paddingHorizontal: 16, justifyContent: 'center', }}
-                >
-                    <ThreeDotsSVG size={18} />
-                </TouchableOpacity>
+                            {/* Profie Picture of User */}
+                            <Image
+                                source={{ uri: thisChatData?.profilePic }}
+                                style={{ width: 35, height: 35, marginLeft: 1, borderRadius: 40 }}
+                            />
+                        </TouchableOpacity>
+
+                        {/* Name of User */}
+                        <TouchableOpacity
+                            onPress={() => { }}
+                            style={{ flex: 1, justifyContent: 'center', }}
+                        >
+                            <Text
+                                numberOfLines={1}
+                                style={{ fontSize: 18, color: colors.white, }}
+                            >
+                                {thisChatData?.name}
+                            </Text>
+                        </TouchableOpacity>
+
+                        {/* Three dots Button */}
+                        <TouchableOpacity
+                            onPress={() => { }}
+                            style={{ paddingHorizontal: 16, justifyContent: 'center', }}
+                        >
+                            <ThreeDotsSVG size={18} />
+                        </TouchableOpacity>
+                    </View>
+                }
             </View>
 
 

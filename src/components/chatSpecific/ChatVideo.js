@@ -5,7 +5,8 @@ import { colors, sizes } from '../../utils/Theme';
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons'
 import { Video, ResizeMode } from 'expo-av';
 
-const ChatVideo = ({ item }) => {
+const ChatVideo = ({ item, isSelected = false, toggleSelection = () => { } }) => {
+    console.log("🚀 ~ ChatVideo ~ item:", item?.duration)
 
 
 
@@ -17,6 +18,28 @@ const ChatVideo = ({ item }) => {
 
 
     const fullScreenVideoRef = useRef()
+
+
+
+
+
+    function formatTime(milliseconds) {
+        var hours = Math.floor(milliseconds / 3600000);
+        var remainingMilliseconds = milliseconds % 3600000;
+        var minutes = Math.floor(remainingMilliseconds / 60000);
+        var seconds = Math.floor((remainingMilliseconds % 60000) / 1000);
+
+        var formattedTime = "";
+        if (hours > 0) {
+            formattedTime += hours + ":" + (minutes < 10 ? '0' : '') + minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+        } else {
+            formattedTime += minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+        }
+
+        return formattedTime;
+    }
+
+    const formatteTime = formatTime(item?.duration)
 
 
 
@@ -60,7 +83,8 @@ const ChatVideo = ({ item }) => {
                 </View>
                 :
                 <Pressable
-                    onPress={() => openFullScreenVideo()}
+                    onPress={() => isSelected ? toggleSelection(item) : openFullScreenVideo()}
+                    onLongPress={() => toggleSelection(item)}
                 >
                     {thumbnail &&
                         <Image
@@ -82,7 +106,7 @@ const ChatVideo = ({ item }) => {
                         <MaterialCommunityIcons name="video" size={18} color={colors.white} />
 
                         <Text style={{ fontSize: 13, marginLeft: 4, fontWeight: "500", color: colors.white }}>
-                            0:52
+                            {formatteTime}
                         </Text>
                     </View>
 
@@ -106,7 +130,7 @@ const ChatVideo = ({ item }) => {
                         style={{ width: '100%', height: '100%' }}
                         useNativeControls
                         source={{ uri: item?.uri }}
-                        resizeMode={ResizeMode.COVER}
+                        resizeMode={ResizeMode.CONTAIN}
                     />
                 </View>
             </Modal>

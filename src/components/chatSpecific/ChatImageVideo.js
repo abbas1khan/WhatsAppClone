@@ -3,7 +3,7 @@ import React from 'react'
 import { colors, sizes } from '../../utils/Theme';
 import ChatVideo from './ChatVideo';
 
-const ChatImageVideo = ({ item }) => {
+const ChatImageVideo = ({ item, isSelected = false, toggleSelection = () => { } }) => {
     return (
         <View style={{ width: sizes.width * 0.65, height: sizes.height * 0.448, padding: 4, borderRadius: 12, backgroundColor: colors.messageBackground }}>
 
@@ -16,6 +16,8 @@ const ChatImageVideo = ({ item }) => {
                 item?.type === "video" ?
                     <ChatVideo
                         item={item}
+                        isSelected={isSelected}
+                        toggleSelection={toggleSelection}
                     />
                     :
                     <></>

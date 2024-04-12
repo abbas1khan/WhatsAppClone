@@ -23,20 +23,21 @@
     "expo-image-picker": "~14.7.1",
     "expo-navigation-bar": "~2.8.1",
     "expo-status-bar": "~1.11.1",
+    "expo-video-thumbnails": "~7.9.0",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
     "react": "18.2.0",
     "react-native": "0.73.6",
     "react-native-draggable-flatlist": "^4.0.1",
     "react-native-gesture-handler": "~2.14.1",
+    "react-native-image-viewing": "^0.2.2",
     "react-native-paper": "^5.12.3",
     "react-native-reanimated": "~3.6.3",
     "react-native-safe-area-context": "4.8.2",
     "react-native-screens": "~3.29.0",
     "react-native-svg": "14.1.0",
     "react-redux": "^9.1.0",
-    "redux-persist": "^6.0.0",
-    "expo-video-thumbnails": "~7.9.0"
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.4"
