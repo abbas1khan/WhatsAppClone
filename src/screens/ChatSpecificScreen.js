@@ -1,8 +1,7 @@
 import { BackHandler, FlatList, Image, ImageBackground, Pressable, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { colors, hexToRGBA, sizes } from '../utils/Theme'
-import ThreeDotsSVG from '../assets/SVG_Components/ThreeDotsSVG'
-import { Ionicons, Feather, MaterialIcons } from '@expo/vector-icons'
+import { Ionicons, Feather, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import useScreenFocus from '../hooks/useScreenFocus'
 import * as NavigationBar from 'expo-navigation-bar';
@@ -19,6 +18,9 @@ import { Menu } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import ChatImageVideo from '../components/chatSpecific/ChatImageVideo'
 import ChatTextMessage from '../components/chatSpecific/ChatTextMessage'
+import { Button, Dialog, Portal, PaperProvider } from 'react-native-paper';
+import DocumentSVG from '../assets/SVG_Components/DocumentSVG'
+import GallerySVG from '../assets/SVG_Components/GallerySVG'
 
 const ChatSpecificScreen = () => {
 
@@ -44,10 +46,11 @@ const ChatSpecificScreen = () => {
 
 
     const [messageText, setMessageText] = useState("")
+    const [selectedMessages, setSelectedMessages] = useState([]);
     const [showAddMediaMenu, setShowAddMediaMenu] = useState(false)
     const [showScrollDown, setShowScrollDown] = useState(false)
-    const [selectedMessages, setSelectedMessages] = useState([]);
-    console.log("🚀 ~ ChatSpecificScreen ~ selectedMessages:", selectedMessages)
+    const [showDeletePopUp, setShowDeletePopUp] = useState(false)
+    const [isLongPressed, setIsLongPressed] = useState(false)
 
 
 
@@ -80,7 +83,7 @@ const ChatSpecificScreen = () => {
                     onPress={() => toggleSelection(item)}
                     onLongPress={() => toggleSelection(item)}
                 >
-                    <View style={{ backgroundColor: isSelected ? hexToRGBA(colors.createNewChatButton, 0.28) : colors.transparent, alignItems: 'flex-end', paddingRight: 16, paddingVertical: 1.5, }}>
+                    <View style={{ alignItems: 'flex-end', paddingRight: 16, paddingVertical: 1.5, }}>
                         {item?.type === "text" ?
                             <Pressable
                                 onPress={() => toggleSelection(item)}
@@ -94,12 +97,18 @@ const ChatSpecificScreen = () => {
                             (item?.type === "image" || item?.type === "video") ?
                                 <ChatImageVideo
                                     item={item}
+                                    chatId={chatId}
                                     isSelected={isSelected}
                                     toggleSelection={toggleSelection}
                                 />
                                 : <></>
                         }
                     </View>
+
+                    {isSelected ?
+                        <View style={{ width: '100%', height: '100%', backgroundColor: isSelected ? hexToRGBA(colors.createNewChatButton, 0.28) : colors.transparent, position: 'absolute' }} />
+                        : <></>
+                    }
                 </Pressable>
             </View>
         )
@@ -140,7 +149,7 @@ const ChatSpecificScreen = () => {
         });
 
         if (!result.canceled && result.assets?.length > 0) {
-            console.log("🚀 ~ galleryPress ~ result.assets:", JSON.stringify(result.assets))
+            // console.log("🚀 ~ galleryPress ~ result.assets:", JSON.stringify(result.assets))
             result.assets?.map((item) => {
                 const localDate = Date.now()
 
@@ -196,9 +205,20 @@ const ChatSpecificScreen = () => {
     }
 
     function onDeletePress() {
+        setShowDeletePopUp(true)
+    }
+
+    function deleteSelectedMessages() {
+        hideDeletePopup()
         selectedMessages?.map(item => {
             dispatch(deleteMessage({ messageId: item?.messageId, chatId: chatId }))
         })
+        setSelectedMessages([])
+        ToastAndroid.show(selectedMessages?.length > 1 ? selectedMessages?.length + " messages deleted" : "Message deleted", ToastAndroid.SHORT);
+    }
+
+    function hideDeletePopup() {
+        setShowDeletePopUp(false)
     }
 
 
@@ -224,7 +244,6 @@ const ChatSpecificScreen = () => {
 
         if (selectedMessages?.length > 0) {
             backHandler = BackHandler.addEventListener('hardwareBackPress', backAction)
-
             return () => backHandler.remove()
         } else {
             return () => {
@@ -247,19 +266,19 @@ const ChatSpecificScreen = () => {
 
                 {selectedMessages?.length > 0 ?
                     <View style={{ width: '100%', height: '100%', flexDirection: 'row', justifyContent: "space-between", }}>
-                        <TouchableOpacity
+                        <Pressable
                             onPress={() => { setSelectedMessages([]) }}
                             style={{ height: '100%', paddingLeft: 16, paddingRight: 9, justifyContent: 'center', }}
                         >
-                            <Ionicons name="arrow-back-sharp" size={23} color={colors.white} />
-                        </TouchableOpacity>
+                            <MaterialIcons name="arrow-back" size={24} color={colors.white} />
+                        </Pressable>
 
-                        <TouchableOpacity
+                        <Pressable
                             onPress={() => { onDeletePress() }}
                             style={{ paddingLeft: 6, paddingRight: 16, flexDirection: 'row', alignItems: 'center', }}
                         >
                             <MaterialIcons name="delete" size={24} color={colors.white} />
-                        </TouchableOpacity>
+                        </Pressable>
 
                     </View>
                     :
@@ -271,7 +290,7 @@ const ChatSpecificScreen = () => {
                         >
 
                             {/* Back Icon */}
-                            <Ionicons name="arrow-back-sharp" size={23} color={colors.white} />
+                            <MaterialIcons name="arrow-back" size={24} color={colors.white} />
 
                             {/* Profie Picture of User */}
                             <Image
@@ -298,7 +317,7 @@ const ChatSpecificScreen = () => {
                             onPress={() => { }}
                             style={{ paddingHorizontal: 16, justifyContent: 'center', }}
                         >
-                            <ThreeDotsSVG size={18} />
+                            <MaterialCommunityIcons name="dots-vertical" size={24} color={colors.white} />
                         </TouchableOpacity>
                     </View>
                 }
@@ -326,6 +345,7 @@ const ChatSpecificScreen = () => {
                         ref={flatListRef}
                         showsVerticalScrollIndicator={false}
                         keyExtractor={(item, index) => item?.messageId}
+                        keyboardShouldPersistTaps="always"
                         renderItem={renderMessages}
                         onScroll={onScroll}
                     />
@@ -376,6 +396,10 @@ const ChatSpecificScreen = () => {
                                             <View style={[styles.flexOneView, { backgroundColor: colors.addMediaDocumentIconTop }]} />
                                             <View style={[styles.flexOneView, { backgroundColor: colors.addMediaDocumentIconBottom }]} />
                                         </View>
+
+                                        <View style={{}}>
+                                            <DocumentSVG size={24} color={colors.white} />
+                                        </View>
                                     </View>
 
                                     <Text style={styles.addMediaButtonText}>
@@ -413,6 +437,10 @@ const ChatSpecificScreen = () => {
                                         <View style={styles.addMediaIconColorsView}>
                                             <View style={[styles.flexOneView, { backgroundColor: colors.addMediaGalleryIconTop }]} />
                                             <View style={[styles.flexOneView, { backgroundColor: colors.addMediaGalleryIconBottom }]} />
+                                        </View>
+
+                                        <View style={{}}>
+                                            <GallerySVG size={21} color={colors.white} />
                                         </View>
                                     </View>
 
@@ -457,6 +485,35 @@ const ChatSpecificScreen = () => {
                     </Pressable>
                 </View>
             </ImageBackground>
+
+
+
+
+
+            {/* Delete Message PopUp */}
+            <Portal>
+                <Dialog
+                    visible={showDeletePopUp}
+                    onDismiss={hideDeletePopup}
+                    style={{ backgroundColor: colors.deletePopupBackground }}
+                >
+                    <Dialog.Content>
+                        <Text variant="bodyMedium" style={{ color: colors.textinputPlaceHolder }}>
+                            Delete {selectedMessages?.length > 1 ? (selectedMessages?.length + " messages?") : "message?"}
+                        </Text>
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <Button onPress={hideDeletePopup} textColor={colors.createNewChatButton}>
+                            Cancel
+                        </Button>
+                        <Button onPress={deleteSelectedMessages} textColor={colors.createNewChatButton}>
+                            Delete
+                        </Button>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
+
+
 
 
         </View>

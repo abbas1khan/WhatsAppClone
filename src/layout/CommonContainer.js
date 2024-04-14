@@ -2,7 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { colors } from '../utils/Theme'
 import { useNavigation } from '@react-navigation/native'
-import { Ionicons } from '@expo/vector-icons'
+import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 
 const CommonContainer = ({ title = "", children }) => {
 
@@ -17,7 +17,7 @@ const CommonContainer = ({ title = "", children }) => {
                     onPress={() => { navigation.goBack() }}
                     style={{ width: 48, height: 56, marginRight: 4, justifyContent: 'center', alignItems: 'center' }}
                 >
-                    <Ionicons name="arrow-back-sharp" size={23} color={colors.white} />
+                    <MaterialIcons name="arrow-back" size={24} color={colors.white} />
                 </TouchableOpacity>
 
                 {title &&

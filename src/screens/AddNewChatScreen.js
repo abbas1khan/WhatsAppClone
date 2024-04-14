@@ -33,7 +33,7 @@ const AddNewChatScreen = () => {
             quality: 1,
         });
 
-        console.log(result);
+        // console.log(result);
 
         if (!result.canceled) {
             setImageSelected(result.assets[0].uri);

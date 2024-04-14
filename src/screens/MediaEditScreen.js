@@ -22,7 +22,6 @@ const MediaEditScreen = () => {
 
 
     const renderMedia = ({ item, index }) => {
-        console.log("🚀 ~ renderMedia ~ item:", item.uri)
         return (
             <View style={{ width: sizes.width, height: sizes.height }}>
 

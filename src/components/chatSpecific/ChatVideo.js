@@ -1,24 +1,23 @@
-import { ActivityIndicator, Image, Modal, Pressable, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Image, Keyboard, Modal, Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import { colors, sizes } from '../../utils/Theme';
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons'
 import { Video, ResizeMode } from 'expo-av';
+import { useNavigation } from '@react-navigation/native';
 
-const ChatVideo = ({ item, isSelected = false, toggleSelection = () => { } }) => {
-    console.log("🚀 ~ ChatVideo ~ item:", item?.duration)
+const ChatVideo = ({ item, chatId, isSelected = false, toggleSelection = () => { } }) => {
 
 
 
     const [thumbnail, setThumbnail] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [showFullScreenModal, setShowFullScreenModal] = useState(false);
 
 
 
 
-    const fullScreenVideoRef = useRef()
-
+    const navigation = useNavigation()
+    const { navigate } = useNavigation()
 
 
 
@@ -44,7 +43,8 @@ const ChatVideo = ({ item, isSelected = false, toggleSelection = () => { } }) =>
 
 
     async function openFullScreenVideo() {
-        setShowFullScreenModal(true)
+        Keyboard.dismiss()
+        navigate("VideoFullScreen", { item, chatId })
     }
 
     const generateThumbnail = useCallback(async (url) => {
@@ -53,7 +53,7 @@ const ChatVideo = ({ item, isSelected = false, toggleSelection = () => { } }) =>
             const { uri } = await VideoThumbnails.getThumbnailAsync(url, { time: 100 });
             setThumbnail(uri)
         } catch (e) {
-            console.warn(e);
+            // console.warn(e);
         } finally {
             setLoading(false)
         }
@@ -62,11 +62,8 @@ const ChatVideo = ({ item, isSelected = false, toggleSelection = () => { } }) =>
 
 
 
-    useEffect(() => {
-        if (showFullScreenModal) {
-            fullScreenVideoRef?.current?.playAsync();
-        }
-    }, [showFullScreenModal])
+
+
 
 
     useEffect(() => {
@@ -78,7 +75,7 @@ const ChatVideo = ({ item, isSelected = false, toggleSelection = () => { } }) =>
     return (
         <View>
             {loading ?
-                <View style={{ width: '100%', height: "100%", justifyContent: 'center', alignItems: 'center', }}>
+                <View style={{ width: '100%', height: "100%", borderRadius: 8, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.black, }}>
                     <ActivityIndicator size={"large"} color={colors.white} />
                 </View>
                 :
@@ -112,30 +109,6 @@ const ChatVideo = ({ item, isSelected = false, toggleSelection = () => { } }) =>
 
                 </Pressable>
             }
-
-
-
-
-
-
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={showFullScreenModal}
-                onRequestClose={() => setShowFullScreenModal(false)}
-            >
-                <View style={{ flex: 1, backgroundColor: colors.black, }}>
-                    <Video
-                        ref={fullScreenVideoRef}
-                        style={{ width: '100%', height: '100%' }}
-                        useNativeControls
-                        source={{ uri: item?.uri }}
-                        resizeMode={ResizeMode.CONTAIN}
-                    />
-                </View>
-            </Modal>
-
-
         </View>
     )
 }

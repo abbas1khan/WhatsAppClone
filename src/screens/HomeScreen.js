@@ -1,12 +1,11 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useRef } from 'react'
 import { colors } from '../utils/Theme'
-import ThreeDotsSVG from '../assets/SVG_Components/ThreeDotsSVG'
 import ChatCard from '../components/ChatCard'
 import DraggableFlatList from "react-native-draggable-flatlist";
 import useScreenFocus from '../hooks/useScreenFocus'
 import * as NavigationBar from 'expo-navigation-bar';
-import { AntDesign } from '@expo/vector-icons'
+import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -52,7 +51,7 @@ const HomeScreen = () => {
                 </Text>
 
                 {/* Three dots Button */}
-                <ThreeDotsSVG size={18} />
+                <MaterialCommunityIcons name="dots-vertical" size={24} color={colors.white} />
             </View>
 
 
