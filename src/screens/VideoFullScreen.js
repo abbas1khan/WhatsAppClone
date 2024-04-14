@@ -163,7 +163,7 @@ const VideoFullScreen = () => {
 
     useScreenFocus(() => {
         NavigationBar.setBackgroundColorAsync(colors.black)
-        NavigationBar.setButtonStyleAsync("dark")
+        NavigationBar.setButtonStyleAsync("light")
     })
 
     useEffect(() => {
