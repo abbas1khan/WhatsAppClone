@@ -43,7 +43,8 @@
     "expo-linear-gradient": "~12.7.2",
     "expo-sharing": "~11.10.0",
     "expo-file-system": "~16.0.8",
-    "expo-media-library": "~15.9.1"
+    "expo-media-library": "~15.9.1",
+    "expo-document-picker": "~11.10.1"
   },
   "devDependencies": {
     "@babel/core": "^7.24.4"

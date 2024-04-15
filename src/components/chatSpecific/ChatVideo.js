@@ -81,7 +81,7 @@ const ChatVideo = ({ item, chatId, isSelected = false, toggleSelection = () => {
                 :
                 <Pressable
                     onPress={() => isSelected ? toggleSelection(item) : openFullScreenVideo()}
-                    onLongPress={() => toggleSelection(item)}
+                    onLongPress={() => toggleSelection(item, true)}
                 >
                     {thumbnail &&
                         <Image

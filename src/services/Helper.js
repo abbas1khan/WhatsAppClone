@@ -4,10 +4,11 @@ import { ToastAndroid } from 'react-native';
 
 
 export async function shareMedia(item) {
+    const isVideo = item?.type === "video"
     try {
         await Sharing.shareAsync(item?.uri, {
-            mimeType: "video/mp4",
-            dialogTitle: "Video",
+            mimeType: item?.mimeType,
+            dialogTitle: isVideo ? "Video" : "Image",
         });
     } catch (error) {
         // console.error('Error sharing:', error.message);

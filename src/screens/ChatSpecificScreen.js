@@ -21,6 +21,7 @@ import ChatTextMessage from '../components/chatSpecific/ChatTextMessage'
 import { Button, Dialog, Portal, PaperProvider } from 'react-native-paper';
 import DocumentSVG from '../assets/SVG_Components/DocumentSVG'
 import GallerySVG from '../assets/SVG_Components/GallerySVG'
+import * as DocumentPicker from 'expo-document-picker';
 
 const ChatSpecificScreen = () => {
 
@@ -47,7 +48,7 @@ const ChatSpecificScreen = () => {
 
     const [messageText, setMessageText] = useState("")
     const [selectedMessages, setSelectedMessages] = useState([]);
-    const [showAddMediaMenu, setShowAddMediaMenu] = useState(false)
+    const [showMediaMenu, setShowMediaMenu] = useState(false)
     const [showScrollDown, setShowScrollDown] = useState(false)
     const [showDeletePopUp, setShowDeletePopUp] = useState(false)
     const [isLongPressed, setIsLongPressed] = useState(false)
@@ -59,6 +60,23 @@ const ChatSpecificScreen = () => {
     const { navigate } = useNavigation()
     const flatListRef = useRef()
     const dispatch = useDispatch()
+
+
+
+
+
+
+    const allowedTypes = [
+        "text/plain",
+        "application/msword",
+        "application/pdf",
+        "application/vnd.ms-excel",
+        "application/vnd.ms-powerpoint",
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+
 
 
 
@@ -81,13 +99,13 @@ const ChatSpecificScreen = () => {
             <View>
                 <Pressable
                     onPress={() => toggleSelection(item)}
-                    onLongPress={() => toggleSelection(item)}
+                    onLongPress={() => toggleSelection(item, true)}
                 >
                     <View style={{ alignItems: 'flex-end', paddingRight: 16, paddingVertical: 1.5, }}>
                         {item?.type === "text" ?
                             <Pressable
                                 onPress={() => toggleSelection(item)}
-                                onLongPress={() => toggleSelection(item)}
+                                onLongPress={() => toggleSelection(item, true)}
                             >
                                 <ChatTextMessage
                                     item={item}
@@ -140,7 +158,7 @@ const ChatSpecificScreen = () => {
     }
 
     async function galleryPress() {
-        setShowAddMediaMenu(false)
+        setShowMediaMenu(false)
 
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -149,7 +167,7 @@ const ChatSpecificScreen = () => {
         });
 
         if (!result.canceled && result.assets?.length > 0) {
-            // console.log("🚀 ~ galleryPress ~ result.assets:", JSON.stringify(result.assets))
+            console.log("🚀 ~ galleryPress ~ result.assets:", JSON.stringify(result.assets))
             result.assets?.map((item) => {
                 const localDate = Date.now()
 
@@ -157,6 +175,7 @@ const ChatSpecificScreen = () => {
                     _id: localDate,
                     type: item?.type,
                     uri: item?.uri,
+                    mimeType: item?.mimeType,
                     messageId: localDate,
                     createdAt: localDate,
                 }
@@ -167,6 +186,17 @@ const ChatSpecificScreen = () => {
 
                 dispatch(sendMessage({ message: message, chatId: chatId }))
             })
+        }
+    }
+
+    async function documentPress() {
+        setShowMediaMenu(false)
+        const result = await DocumentPicker.getDocumentAsync({
+            type: allowedTypes,
+            multiple: true,
+        })
+        if (!result.canceled && result.assets?.length > 0) {
+            console.log("🚀 ~ documentPress ~ result.assets:", JSON.stringify(result.assets))
         }
     }
 
@@ -183,25 +213,26 @@ const ChatSpecificScreen = () => {
         }
     }
 
-    async function documentPress() {
-        setShowAddMediaMenu(false)
-    }
-
     async function cameraPress() {
-        setShowAddMediaMenu(false)
+        setShowMediaMenu(false)
     }
 
-    const toggleSelection = (item) => {
-        setSelectedMessages((prevSelectedMessages) => {
-            const index = prevSelectedMessages?.findIndex((selectedItem) => selectedItem?.messageId === item?.messageId);
-            if (index !== -1) {
-                // If item is already selected, deselect it
-                return prevSelectedMessages?.filter((selectedItem) => selectedItem?.messageId !== item?.messageId);
-            } else {
-                // If item is not selected, select it
-                return [...prevSelectedMessages, item];
+    const toggleSelection = (item, isLongPress) => {
+        if (isLongPressed || isLongPress) {
+            if (!isLongPressed) {
+                setIsLongPressed(true)
             }
-        })
+            setSelectedMessages((prevSelectedMessages) => {
+                const index = prevSelectedMessages?.findIndex((selectedItem) => selectedItem?.messageId === item?.messageId);
+                if (index !== -1) {
+                    // If item is already selected, deselect it
+                    return prevSelectedMessages?.filter((selectedItem) => selectedItem?.messageId !== item?.messageId);
+                } else {
+                    // If item is not selected, select it
+                    return [...prevSelectedMessages, item];
+                }
+            })
+        }
     }
 
     function onDeletePress() {
@@ -246,6 +277,7 @@ const ChatSpecificScreen = () => {
             backHandler = BackHandler.addEventListener('hardwareBackPress', backAction)
             return () => backHandler.remove()
         } else {
+            setIsLongPressed(false)
             return () => {
                 if (backHandler) {
                     backHandler.remove()
@@ -370,11 +402,11 @@ const ChatSpecificScreen = () => {
 
                         {/* Media Button */}
                         <Menu
-                            visible={showAddMediaMenu}
-                            onDismiss={() => { setShowAddMediaMenu(false) }}
+                            visible={showMediaMenu}
+                            onDismiss={() => { setShowMediaMenu(false) }}
                             anchor={
                                 <TouchableOpacity
-                                    onPress={() => { setShowAddMediaMenu(true) }}
+                                    onPress={() => { setShowMediaMenu(true) }}
                                     style={{ width: 48, height: 47, justifyContent: 'center', alignItems: 'center', }}
                                 >
                                     <View style={{ transform: [{ rotate: '90deg' }, { scaleX: -1 }] }}>
