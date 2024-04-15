@@ -10,7 +10,9 @@ const Stack = createStackNavigator();
 
 const MainAppNavigation = () => {
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
+        <Stack.Navigator screenOptions={{
+            headerShown: false, animation: 'slide_from_right', detachPreviousScreen: false,
+        }}>
             <Stack.Screen name="HomeScreen" component={HomeScreen} />
             <Stack.Screen name="ChatSpecificScreen" component={ChatSpecificScreen} />
             <Stack.Screen name="AddNewChatScreen" component={AddNewChatScreen} />
