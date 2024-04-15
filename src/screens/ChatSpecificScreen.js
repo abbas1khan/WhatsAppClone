@@ -22,6 +22,7 @@ import { Button, Dialog, Portal, PaperProvider } from 'react-native-paper';
 import DocumentSVG from '../assets/SVG_Components/DocumentSVG'
 import GallerySVG from '../assets/SVG_Components/GallerySVG'
 import * as DocumentPicker from 'expo-document-picker';
+import uuid from 'react-native-uuid';
 
 const ChatSpecificScreen = () => {
 
@@ -139,13 +140,13 @@ const ChatSpecificScreen = () => {
 
     function onSendMessage() {
         if (messageText?.trim()?.length > 0) {
-            const localDate = Date.now()
+            const unique = uuid.v4()
             let message = {
-                _id: localDate,
+                _id: unique,
                 type: "text",
                 content: messageText?.trim(),
-                messageId: localDate,
-                createdAt: localDate,
+                messageId: unique,
+                createdAt: Date.now(),
             }
             dispatch(sendMessage({ message: message, chatId: chatId }))
             setMessageText("")
@@ -169,21 +170,18 @@ const ChatSpecificScreen = () => {
         if (!result.canceled && result.assets?.length > 0) {
             console.log("🚀 ~ galleryPress ~ result.assets:", JSON.stringify(result.assets))
             result.assets?.map((item) => {
-                const localDate = Date.now()
-
+                const unique = uuid.v4()
                 let message = {
-                    _id: localDate,
+                    _id: unique,
                     type: item?.type,
                     uri: item?.uri,
                     mimeType: item?.mimeType,
-                    messageId: localDate,
-                    createdAt: localDate,
+                    messageId: unique,
+                    createdAt: Date.now(),
                 }
-
                 if (item?.type === "video") {
                     message.duration = item?.duration
                 }
-
                 dispatch(sendMessage({ message: message, chatId: chatId }))
             })
         }
@@ -244,8 +242,8 @@ const ChatSpecificScreen = () => {
         selectedMessages?.map(item => {
             dispatch(deleteMessage({ messageId: item?.messageId, chatId: chatId }))
         })
-        setSelectedMessages([])
         ToastAndroid.show(selectedMessages?.length > 1 ? selectedMessages?.length + " messages deleted" : "Message deleted", ToastAndroid.SHORT);
+        setSelectedMessages([])
     }
 
     function hideDeletePopup() {

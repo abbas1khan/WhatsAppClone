@@ -1,4 +1,5 @@
 import moment from 'moment';
+import uuid from 'react-native-uuid';
 
 function groupedDays(messages) {
   const today = moment(); // Get the current date
@@ -40,7 +41,8 @@ function generateItems(messages) {
     const sortedMessages = days[date].sort(
       (x, y) => new Date(y.createdAt) - new Date(x.createdAt)
     );
-    return acc.concat([...sortedMessages, { type: 'day', date, _id: Date.now(), messageId: Date.now() }]);
+    const unique = uuid.v4()
+    return acc.concat([...sortedMessages, { type: 'day', date, _id: unique, messageId: unique }]);
   }, []);
   return items;
 }

@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import uuid from 'react-native-uuid';
 
 const ChatRosterSlice = createSlice({
     name: 'ChatRosterSlice',
@@ -7,11 +8,11 @@ const ChatRosterSlice = createSlice({
     },
     reducers: {
         addNewChatToRoster(state, action) {
-            let localDate = action.payload?.date || Date.now();
+            let chatId = action.payload?.chatId;
             let newChat = {
-                _id: localDate,
-                chatId: localDate,
-                createdAt: localDate,
+                _id: chatId,
+                chatId: chatId,
+                createdAt: Date.now(),
                 name: action.payload?.name,
                 profilePic: action.payload?.profilePic || "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png",
                 messages: []

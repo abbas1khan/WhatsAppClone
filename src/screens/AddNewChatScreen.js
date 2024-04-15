@@ -8,6 +8,7 @@ import CheckSVG from '../assets/SVG_Components/CheckSVG';
 import { useDispatch, useSelector } from 'react-redux'
 import { addNewChatToRoster } from '../redux/ChatRosterSlice';
 import { useNavigation } from '@react-navigation/native'
+import uuid from 'react-native-uuid';
 
 const AddNewChatScreen = () => {
 
@@ -41,8 +42,8 @@ const AddNewChatScreen = () => {
     };
 
     function onSave() {
-        const chatId = Date.now()
-        dispatch(addNewChatToRoster({ name: title?.trim(), date: chatId, profilePic: imageSelected }))
+        const chatId = uuid.v4()
+        dispatch(addNewChatToRoster({ name: title?.trim(), chatId: chatId, profilePic: imageSelected }))
         navigation.replace("ChatSpecificScreen", { chatId })
     }
 
