@@ -10,35 +10,11 @@ import { colors } from './src/utils/Theme';
 import { store } from './src/redux/store';
 import * as NavigationBar from 'expo-navigation-bar';
 import { useEffect } from 'react';
-import { useFonts } from 'expo-font';
 import { PaperProvider } from 'react-native-paper';
 
 export default function App() {
 
   let persister = persistStore(store)
-
-
-
-  const [loaded] = useFonts({
-    'HelveticaNeueBlack': require('./src/assets/fonts/HelveticaNeueBlack.otf'),
-    'HelveticaNeueBlackItalic': require('./src/assets/fonts/HelveticaNeueBlackItalic.otf'),
-    'HelveticaNeueBold': require('./src/assets/fonts/HelveticaNeueBold.otf'),
-    'HelveticaNeueBoldItalic': require('./src/assets/fonts/HelveticaNeueBoldItalic.otf'),
-    'HelveticaNeueHeavy': require('./src/assets/fonts/HelveticaNeueHeavy.otf'),
-    'HelveticaNeueHeavyItalic': require('./src/assets/fonts/HelveticaNeueHeavyItalic.otf'),
-    'HelveticaNeueItalic': require('./src/assets/fonts/HelveticaNeueItalic.ttf'),
-    'HelveticaNeueLight': require('./src/assets/fonts/HelveticaNeueLight.otf'),
-    'HelveticaNeueLightItalic': require('./src/assets/fonts/HelveticaNeueLightItalic.otf'),
-    'HelveticaNeueMedium': require('./src/assets/fonts/HelveticaNeueMedium.otf'),
-    'HelveticaNeueMediumItalic': require('./src/assets/fonts/HelveticaNeueMediumItalic.otf'),
-    'HelveticaNeueRoman': require('./src/assets/fonts/HelveticaNeueRoman.otf'),
-    'HelveticaNeueThin': require('./src/assets/fonts/HelveticaNeueThin.otf'),
-    'HelveticaNeueThinItalic': require('./src/assets/fonts/HelveticaNeueThinItalic.otf'),
-    'HelveticaNeueUltraLight': require('./src/assets/fonts/HelveticaNeueUltraLight.otf'),
-    'HelveticaNeueUltraLightItalic': require('./src/assets/fonts/HelveticaNeueUltraLightItalic.otf'),
-  })
-
-
 
 
   async function setNavigationBarColor() {
@@ -49,12 +25,6 @@ export default function App() {
   useEffect(() => {
     setNavigationBarColor()
   }, [])
-
-
-
-  if (!loaded) {
-    return null;
-  }
 
 
   return (
