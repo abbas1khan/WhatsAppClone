@@ -168,7 +168,7 @@ const ChatSpecificScreen = () => {
         });
 
         if (!result.canceled && result.assets?.length > 0) {
-            console.log("🚀 ~ galleryPress ~ result.assets:", JSON.stringify(result.assets))
+            // console.log("🚀 ~ galleryPress ~ result.assets:", JSON.stringify(result.assets))
             result.assets?.map((item) => {
                 const unique = uuid.v4()
                 let message = {
