@@ -12,10 +12,11 @@ import useDebounce from '../hooks/useDebounce';
 import moment from 'moment';
 import ForwardSVG from '../assets/SVG_Components/ForwardSVG';
 import { Button, Dialog, Menu, Portal } from 'react-native-paper';
-import { saveMedia, shareMedia } from '../services/Helper';
 import { useDispatch } from 'react-redux';
 import { deleteMessage } from '../redux/ChatRosterSlice';
 import { LinearGradient } from 'expo-linear-gradient';
+import { saveMedia, shareMedia } from '../services/ChatHelper';
+import { formatTime } from '../utils/Helper';
 
 let disabled = false
 
@@ -33,7 +34,7 @@ const VideoFullScreen = () => {
     const [isPlaying, setIsPlaying] = useState(true)
     const [duration, setDuration] = useState(0)
     const [position, setPosition] = useState(0)
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     const [showIcons, setShowIcons] = useState(true)
     const [showMenu, setShowMenu] = useState(false)
     const [showDeletePopUp, setShowDeletePopUp] = useState(false)
@@ -65,7 +66,9 @@ const VideoFullScreen = () => {
     async function onReadyForDisplay() {
         if (videoRef?.current) {
             await videoRef?.current?.playAsync()
-            setShowIcons(false)
+            setTimeout(() => {
+                setShowIcons(false)
+            }, 1000);
         }
     }
 
@@ -109,22 +112,6 @@ const VideoFullScreen = () => {
 
         handleHideIcons()
     };
-
-    function formatTime(milliseconds) {
-        var hours = Math.floor(milliseconds / 3600000);
-        var remainingMilliseconds = milliseconds % 3600000;
-        var minutes = Math.floor(remainingMilliseconds / 60000);
-        var seconds = Math.floor((remainingMilliseconds % 60000) / 1000);
-
-        var formattedTime = "";
-        if (hours > 0) {
-            formattedTime += hours + ":" + (minutes < 10 ? '0' : '') + minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
-        } else {
-            formattedTime += minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
-        }
-
-        return formattedTime;
-    }
 
     function closeMenu() {
         setShowMenu(false)

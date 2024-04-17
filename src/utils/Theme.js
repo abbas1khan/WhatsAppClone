@@ -56,6 +56,8 @@ export const colors = {
     blueTick: "#52beea",
     deletePopupBackground: "#3a494f",
     videoFullScreenHeaderBackground: "#070c10",
+    chatFileBackground: "#025043",
+    fileSize: "#8198a0",
 
     addMediaPopupBackground: "#26343d",
     addMediaDocumentIconTop: "#745de9",
@@ -65,77 +67,13 @@ export const colors = {
     addMediaGalleryIconTop: "#b659e5",
     addMediaGalleryIconBottom: "#c861fa",
 
-
-
-
-
-
-
-    primary: 'rgb(38 38 38)',
-    secondary: '#eab308',
-
-    lightBlue: '#F5FEFF',
-
-
-    black: "#000",
-    white: "#fff",
-
-    gray: "#C1C3C5",
-    lightGray: "#FCFBFC",
-    lightGray1: "#F5F5F6",
-    lightGray2: "#F6F6F7",
-    lightGray3: "#EFEFF1",
-    lightGray4: "#F8F8F9",
-    lightGray5: 'rgb(209 213 219)',
-    darkgray: "#C3C6C7",
-    darkgray1: '#898C95',
-    darkgray2: 'rgba(23, 23, 23, 0.8)',
-    mygrey: '#808080',
-
-
-    darkBlack1: "#121211",
-    darkBlack2: "#181818",
-    darkBlack3: "#282828",
-    darkBlack4: "#383838",
-
-
-    neutral300: 'rgb(212 212 212)',
-    neutral400: 'rgb(163 163 163)',
-    neutral500: 'rgb(115 115 115)',
-    neutral700: 'rgb(64 64 64)',
-
-    border: "#374957",
+    black: "#000000",
+    white: "#ffffff",
 
     transparent: "transparent",
 
     rgbaWhite: opacity => `rgba(255,255,255, ${opacity})`,
     rgbaBlack: opacity => `rgba(0,0,0, ${opacity})`,
-
-    "grey": {
-        "50": "#fafafa",
-        "100": "#f5f5f5",
-        "200": "#eeeeee",
-        "300": "#e0e0e0",
-        "400": "#bdbdbd",
-        "500": "#9e9e9e",
-        "600": "#757575",
-        "700": "#616161",
-        "800": "#424242",
-        "900": "#212121"
-    },
-    "bluegrey": {
-        "50": "#eceff1",
-        "100": "#cfd8dc",
-        "200": "#b0bec5",
-        "300": "#90a4ae",
-        "400": "#78909c",
-        "500": "#607d8b",
-        "600": "#546e7a",
-        "700": "#455a64",
-        "800": "#37474f",
-        "900": "#263238"
-    }
-
 }
 
 export const hexToRGBA = (hex, opacity) => {

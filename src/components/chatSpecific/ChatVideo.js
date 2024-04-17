@@ -5,6 +5,7 @@ import { colors, sizes } from '../../utils/Theme';
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons'
 import { Video, ResizeMode } from 'expo-av';
 import { useNavigation } from '@react-navigation/native';
+import { formatTime } from '../../utils/Helper';
 
 const ChatVideo = ({ item, chatId, isSelected = false, toggleSelection = () => { } }) => {
 
@@ -21,22 +22,6 @@ const ChatVideo = ({ item, chatId, isSelected = false, toggleSelection = () => {
 
 
 
-
-    function formatTime(milliseconds) {
-        var hours = Math.floor(milliseconds / 3600000);
-        var remainingMilliseconds = milliseconds % 3600000;
-        var minutes = Math.floor(remainingMilliseconds / 60000);
-        var seconds = Math.floor((remainingMilliseconds % 60000) / 1000);
-
-        var formattedTime = "";
-        if (hours > 0) {
-            formattedTime += hours + ":" + (minutes < 10 ? '0' : '') + minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
-        } else {
-            formattedTime += minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
-        }
-
-        return formattedTime;
-    }
 
     const formatteTime = formatTime(item?.duration)
 

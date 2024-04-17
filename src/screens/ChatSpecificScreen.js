@@ -12,7 +12,6 @@ import DraggableFlatList from "react-native-draggable-flatlist";
 import { deleteMessage, sendMessage } from '../redux/ChatRosterSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import moment from 'moment'
-import DoubleBlueTickSVG from '../assets/SVG_Components/DoubleBlueTickSVG'
 import generateItems from '../services/generateItems'
 import { Menu } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
@@ -23,6 +22,8 @@ import DocumentSVG from '../assets/SVG_Components/DocumentSVG'
 import GallerySVG from '../assets/SVG_Components/GallerySVG'
 import * as DocumentPicker from 'expo-document-picker';
 import uuid from 'react-native-uuid';
+import { openFile } from '../services/ChatHelper'
+import ChatFile from '../components/chatSpecific/ChatFile'
 
 const ChatSpecificScreen = () => {
 
@@ -120,7 +121,15 @@ const ChatSpecificScreen = () => {
                                     isSelected={isSelected}
                                     toggleSelection={toggleSelection}
                                 />
-                                : <></>
+                                :
+                                item?.type === "file" ?
+                                    <ChatFile
+                                        item={item}
+                                        isSelected={isSelected}
+                                        toggleSelection={toggleSelection}
+                                    />
+                                    :
+                                    <></>
                         }
                     </View>
 
@@ -141,21 +150,27 @@ const ChatSpecificScreen = () => {
     function onSendMessage() {
         if (messageText?.trim()?.length > 0) {
             const unique = uuid.v4()
+            const time = Date.now()
             let message = {
                 _id: unique,
                 type: "text",
                 content: messageText?.trim(),
                 messageId: unique,
-                createdAt: Date.now(),
+                createdAt: time,
+                modifiedAt: time,
             }
             dispatch(sendMessage({ message: message, chatId: chatId }))
             setMessageText("")
-            setTimeout(() => {
-                flatListRef?.current?.scrollToOffset({ offset: 0, animated: true })
-            }, 0);
+            scrollDown()
         } else {
             ToastAndroid.show("Please enter message", ToastAndroid.SHORT);
         }
+    }
+
+    function scrollDown() {
+        setTimeout(() => {
+            flatListRef?.current?.scrollToOffset({ offset: 0, animated: true })
+        }, 0);
     }
 
     async function galleryPress() {
@@ -171,30 +186,50 @@ const ChatSpecificScreen = () => {
             // console.log("🚀 ~ galleryPress ~ result.assets:", JSON.stringify(result.assets))
             result.assets?.map((item) => {
                 const unique = uuid.v4()
+                const time = Date.now()
                 let message = {
                     _id: unique,
                     type: item?.type,
                     uri: item?.uri,
                     mimeType: item?.mimeType,
                     messageId: unique,
-                    createdAt: Date.now(),
+                    createdAt: time,
+                    modifiedAt: time,
                 }
                 if (item?.type === "video") {
                     message.duration = item?.duration
                 }
                 dispatch(sendMessage({ message: message, chatId: chatId }))
             })
+            scrollDown()
         }
     }
 
     async function documentPress() {
         setShowMediaMenu(false)
         const result = await DocumentPicker.getDocumentAsync({
-            type: allowedTypes,
+            // type: allowedTypes,
             multiple: true,
         })
         if (!result.canceled && result.assets?.length > 0) {
             console.log("🚀 ~ documentPress ~ result.assets:", JSON.stringify(result.assets))
+            result.assets?.map((item) => {
+                const unique = uuid.v4()
+                const time = Date.now()
+                let message = {
+                    _id: unique,
+                    type: "file",
+                    uri: item?.uri,
+                    size: item?.size,
+                    name: item?.name,
+                    mimeType: item?.mimeType,
+                    messageId: unique,
+                    createdAt: time,
+                    modifiedAt: time,
+                }
+                dispatch(sendMessage({ message: message, chatId: chatId }))
+            })
+            scrollDown()
         }
     }
 
@@ -373,6 +408,7 @@ const ChatSpecificScreen = () => {
                         extraData={sortedMessages}
                         inverted={true}
                         ref={flatListRef}
+                        bounces={false}
                         showsVerticalScrollIndicator={false}
                         keyExtractor={(item, index) => item?.messageId}
                         keyboardShouldPersistTaps="always"
@@ -498,7 +534,7 @@ const ChatSpecificScreen = () => {
                         <TouchableOpacity
                             style={{ width: 50, height: 47, justifyContent: 'center', alignItems: 'center', }}
                         >
-                            <CameraChatSpecificSVG size={21} color={colors.cameraChatSpecific} />
+                            <CameraChatSpecificSVG size={20} color={colors.cameraChatSpecific} />
                         </TouchableOpacity>
 
                     </View>
