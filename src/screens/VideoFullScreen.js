@@ -42,7 +42,12 @@ const VideoFullScreen = () => {
 
 
 
-    const [slideAnim] = useState(new Animated.Value(0));
+    const slideAnimation = useRef(new Animated.Value(0)).current;
+
+    const translateY = slideAnimation.interpolate({
+        inputRange: [0, 1],
+        outputRange: [100, 0],
+    });
 
 
 
@@ -154,7 +159,7 @@ const VideoFullScreen = () => {
     })
 
     useEffect(() => {
-        Animated.timing(slideAnim, {
+        Animated.timing(slideAnimation, {
             toValue: showIcons ? 1 : 0,
             duration: 300,
             useNativeDriver: true,
@@ -275,14 +280,7 @@ const VideoFullScreen = () => {
             <Animated.View
                 style={{
                     height: 78, width: '100%', paddingHorizontal: 24, flexDirection: 'row', position: 'absolute', bottom: 0, justifyContent: 'space-between', alignItems: 'center',
-                    transform: [
-                        {
-                            translateY: slideAnim.interpolate({
-                                inputRange: [0, 1],
-                                outputRange: [100, 0],
-                            }),
-                        },
-                    ],
+                    transform: [{ translateY }],
                 }}
             >
                 <Text style={styles.durationText}>
