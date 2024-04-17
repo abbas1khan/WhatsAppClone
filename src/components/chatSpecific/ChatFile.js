@@ -8,6 +8,7 @@ const ChatFile = ({ item, isSelected = false, toggleSelection = () => { } }) => 
 
     const size = convertBytes(item?.size)
     const fileType = getFileTypeFromName(item?.name)?.toUpperCase()
+    const isPDF = fileType === "PDF"
 
     return (
         <Pressable
