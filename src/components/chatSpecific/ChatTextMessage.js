@@ -12,10 +12,10 @@ const chatTextMessage = ({ item }) => {
             </Text>
             <View style={{ flexDirection: 'row', alignSelf: 'flex-end', alignItems: 'flex-end', }}>
                 <Text style={{ fontSize: 11, marginTop: 6, marginRight: 4, color: colors.messageTime }}>
-                    {moment(item?.createdAt).format('LT')}
+                    {moment(item?.createdAt).format('h:mm a')}
                 </Text>
 
-                <DoubleBlueTickSVG size={18} color={colors.blueTick} />
+                <DoubleBlueTickSVG color={colors.blueTick} />
             </View>
         </View>
     )

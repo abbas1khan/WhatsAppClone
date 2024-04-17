@@ -3,7 +3,7 @@ import React from 'react'
 import { colors, sizes } from '../../utils/Theme';
 import ChatVideo from './ChatVideo';
 
-const ChatImageVideo = ({ item, chatId, isSelected = false, toggleSelection = () => { } }) => {
+const ChatImageVideo = ({ item, chatId, isLongPressed = false, toggleSelection = () => { } }) => {
     return (
         <View style={{ width: sizes.width * 0.65, height: sizes.height * 0.448, padding: 4, borderRadius: 12, backgroundColor: colors.messageBackground }}>
 
@@ -17,7 +17,7 @@ const ChatImageVideo = ({ item, chatId, isSelected = false, toggleSelection = ()
                     <ChatVideo
                         item={item}
                         chatId={chatId}
-                        isSelected={isSelected}
+                        isLongPressed={isLongPressed}
                         toggleSelection={toggleSelection}
                     />
                     :

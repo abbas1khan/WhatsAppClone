@@ -58,6 +58,7 @@ export const colors = {
     videoFullScreenHeaderBackground: "#070c10",
     chatFileBackground: "#025043",
     fileSize: "#8198a0",
+    blueTick: "#54bee8",
 
     addMediaPopupBackground: "#26343d",
     addMediaDocumentIconTop: "#745de9",

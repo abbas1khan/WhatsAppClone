@@ -118,14 +118,14 @@ const ChatSpecificScreen = () => {
                                 <ChatImageVideo
                                     item={item}
                                     chatId={chatId}
-                                    isSelected={isSelected}
+                                    isLongPressed={isLongPressed}
                                     toggleSelection={toggleSelection}
                                 />
                                 :
                                 item?.type === "file" ?
                                     <ChatFile
                                         item={item}
-                                        isSelected={isSelected}
+                                        isLongPressed={isLongPressed}
                                         toggleSelection={toggleSelection}
                                     />
                                     :

@@ -7,7 +7,7 @@ import { Video, ResizeMode } from 'expo-av';
 import { useNavigation } from '@react-navigation/native';
 import { formatTime } from '../../utils/Helper';
 
-const ChatVideo = ({ item, chatId, isSelected = false, toggleSelection = () => { } }) => {
+const ChatVideo = ({ item, chatId, isLongPressed = false, toggleSelection = () => { } }) => {
 
 
 
@@ -65,7 +65,7 @@ const ChatVideo = ({ item, chatId, isSelected = false, toggleSelection = () => {
                 </View>
                 :
                 <Pressable
-                    onPress={() => isSelected ? toggleSelection(item) : openFullScreenVideo()}
+                    onPress={() => isLongPressed ? toggleSelection(item) : openFullScreenVideo()}
                     onLongPress={() => toggleSelection(item, true)}
                 >
                     {thumbnail &&
