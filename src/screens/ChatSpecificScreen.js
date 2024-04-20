@@ -248,6 +248,11 @@ const ChatSpecificScreen = () => {
 
     async function cameraPress() {
         setShowMediaMenu(false)
+        navigateToCameraScreen()
+    }
+
+    async function navigateToCameraScreen() {
+        navigate("CameraScreen")
     }
 
     const toggleSelection = (item, isLongPress) => {
@@ -532,6 +537,7 @@ const ChatSpecificScreen = () => {
 
                         {/* Camera Button */}
                         <TouchableOpacity
+                            onPress={() => { navigateToCameraScreen() }}
                             style={{ width: 50, height: 47, justifyContent: 'center', alignItems: 'center', }}
                         >
                             <CameraChatSpecificSVG size={20} color={colors.cameraChatSpecific} />

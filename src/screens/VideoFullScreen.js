@@ -305,7 +305,7 @@ const VideoFullScreen = () => {
                 <LinearGradient
                     // Background Linear Gradient
                     colors={[colors.transparent, colors.black]}
-                    style={{ width: sizes.width, height: '90%', position: 'absolute', zIndex: -1 }}
+                    style={{ width: sizes.width, height: '80%', position: 'absolute', zIndex: -1 }}
                 />
             </Animated.View>
 

@@ -64,7 +64,7 @@ const ChatFile = ({ item, isLongPressed = false, toggleSelection = () => { } }) 
     )
 }
 
-export default ChatFile
+export default React.memo(ChatFile)
 
 const styles = StyleSheet.create({
     textStyle: {

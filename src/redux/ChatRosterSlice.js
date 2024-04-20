@@ -27,19 +27,6 @@ const ChatRosterSlice = createSlice({
                     messages: [action.payload?.message, ...state.chats[chatIndex].messages]
                 };
             }
-            // const { chatId, message } = action.payload;
-            // return {
-            //     ...state,
-            //     chats: state?.chats?.map(chat => {
-            //         if (chat?.chatId === chatId) {
-            //             return {
-            //                 ...chat,
-            //                 messages: [message, ...chat.messages]
-            //             };
-            //         }
-            //         return chat;
-            //     })
-            // };
         },
         deleteMessage(state, action) {
             const chatIndex = state?.chats?.findIndex(item => item?.chatId === action.payload?.chatId)
@@ -53,6 +40,10 @@ const ChatRosterSlice = createSlice({
     }
 })
 
-export const { addNewChatToRoster, sendMessage, deleteMessage } = ChatRosterSlice.actions
+export const {
+    addNewChatToRoster,
+    sendMessage,
+    deleteMessage
+} = ChatRosterSlice.actions
 
 export default ChatRosterSlice.reducer
