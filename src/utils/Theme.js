@@ -59,6 +59,7 @@ export const colors = {
     chatFileBackground: "#025043",
     fileSize: "#8198a0",
     blueTick: "#54bee8",
+    scrollDownBackground: "#283239",
 
     addMediaPopupBackground: "#26343d",
     addMediaDocumentIconTop: "#745de9",

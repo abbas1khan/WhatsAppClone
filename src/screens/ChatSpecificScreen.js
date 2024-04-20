@@ -24,6 +24,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import uuid from 'react-native-uuid';
 import { openFile } from '../services/ChatHelper'
 import ChatFile from '../components/chatSpecific/ChatFile'
+import ScrollDownSVG from '../assets/SVG_Components/ScrollDownSVG'
 
 const ChatSpecificScreen = () => {
 
@@ -167,9 +168,9 @@ const ChatSpecificScreen = () => {
         }
     }
 
-    function scrollDown() {
+    function scrollDown(animated = true) {
         setTimeout(() => {
-            flatListRef?.current?.scrollToOffset({ offset: 0, animated: true })
+            flatListRef?.current?.scrollToOffset({ offset: 0, animated: animated })
         }, 0);
     }
 
@@ -420,6 +421,19 @@ const ChatSpecificScreen = () => {
                         renderItem={renderMessages}
                         onScroll={onScroll}
                     />
+
+                    {showScrollDown &&
+                        <Pressable
+                            onPress={() => { scrollDown(false) }}
+                            style={{ padding: 6, position: 'absolute', bottom: 0, right: 9, }}
+                        >
+                            <View style={{ width: 32, height: 32, borderRadius: 32, elevation: 6, backgroundColor: colors.scrollDownBackground, justifyContent: 'center', alignItems: 'center', }}>
+                                <View style={{ marginBottom: -2 }}>
+                                    <ScrollDownSVG size={12} />
+                                </View>
+                            </View>
+                        </Pressable>
+                    }
 
                 </View>
 
