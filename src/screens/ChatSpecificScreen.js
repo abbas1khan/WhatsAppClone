@@ -1,4 +1,4 @@
-import { BackHandler, FlatList, Image, ImageBackground, Pressable, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
+import { BackHandler, FlatList, Image, ImageBackground, Keyboard, Pressable, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { colors, hexToRGBA, sizes } from '../utils/Theme'
 import { Ionicons, Feather, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons'
@@ -303,6 +303,17 @@ const ChatSpecificScreen = () => {
         NavigationBar.setButtonStyleAsync("light");
     })
 
+    useEffect(() => {
+        const keyboardDidHideListener = Keyboard.addListener(
+            'keyboardDidHide', () => {
+                Keyboard.dismiss()
+            }
+        )
+
+        return () => {
+            keyboardDidHideListener.remove();
+        };
+    }, []);
 
     useEffect(() => {
         const backAction = () => {
