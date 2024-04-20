@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import { StatusBar, View, StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
