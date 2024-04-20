@@ -168,9 +168,9 @@ const ChatSpecificScreen = () => {
         }
     }
 
-    function scrollDown(animated = true) {
+    async function scrollDown() {
         setTimeout(() => {
-            flatListRef?.current?.scrollToOffset({ offset: 0, animated: animated })
+            flatListRef?.current?.scrollToOffset({ offset: 0, animated: false })
         }, 0);
     }
 
@@ -424,7 +424,7 @@ const ChatSpecificScreen = () => {
 
                     {showScrollDown &&
                         <Pressable
-                            onPress={() => { scrollDown(false) }}
+                            onPress={() => { scrollDown() }}
                             style={{ padding: 6, position: 'absolute', bottom: 0, right: 9, }}
                         >
                             <View style={{ width: 32, height: 32, borderRadius: 32, elevation: 6, backgroundColor: colors.scrollDownBackground, justifyContent: 'center', alignItems: 'center', }}>
